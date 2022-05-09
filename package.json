@@ -1,0 +1,19 @@
+{
+  "name": "scritracius-data-notation",
+  "version": "1.0.0",
+  "description": "Notation for Scritracius Data",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Grikke/scritracius-data-notation.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Grikke/scritracius-data-notation/issues"
+  },
+  "homepage": "https://github.com/Grikke/scritracius-data-notation#readme"
+}
