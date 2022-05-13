@@ -26,6 +26,8 @@ const splice = (string, start, end) => {
 
 const checkType = str => {
   switch (true) {
+    case str.startsWith('[f]'):
+      return 'function'
     case str.startsWith('[') && str.endsWith(']'):
       return 'array'
     case str.startsWith('{') && str.endsWith('}'):
@@ -50,20 +52,15 @@ const renderPart = (part, type) => {
         part = splice(part, 0, part.search(objectAssign) +2).trim()
         let arrayPos = findClosing(part, 0, ['[', ']'])
         let objectPos = findClosing(part, 0, ['{', '}'])
-        if (arrayPos !== -1) {
-          elem = part.slice(0, arrayPos + 1)
-          part = splice(part, 0, arrayPos + 1)
+        let pos = part.indexOf(arraySeparator) !== -1 ? part.indexOf(arraySeparator) : part.length
+        if (!part.startsWith('[f]')) {
+          if (arrayPos !== -1)
+            pos = arrayPos + 1
+          else if (objectPos !== -1)
+            pos = objectPos + 1
         }
-        else if (objectPos !== -1) {
-          elem = part.slice(0, objectPos + 1)
-          part = splice(part, 0, objectPos + 1)
-        }
-        else {
-          let pos = part.search(arraySeparator) !== -1 ? part.search(arraySeparator) - 1 : part.length
-          elem = part.slice(0, pos)
-          part = splice(part, 0, pos)
-        }
-        elem = elem.trim()
+        elem = part.slice(0, pos).trim()
+        part = splice(part, 0, pos)
         object = {...object, [name]: renderPart(elem, checkType(elem))}
         part = part.replace(arraySeparator, '')
         if (part.trim() === "")
@@ -77,20 +74,15 @@ const renderPart = (part, type) => {
       while (isNotEmpty) {
         let arrayPos = findClosing(part, 0, ['[', ']'])
         let objectPos = findClosing(part, 0, ['{', '}'])
-        if (arrayPos !== -1) {
-          elem = part.slice(0, arrayPos + 1)
-          part = splice(part, 0, arrayPos + 1)
+        let pos = part.indexOf(arraySeparator) !== -1 ? part.indexOf(arraySeparator) : part.length
+        if (!part.startsWith('[f]')) {
+          if (arrayPos !== -1)
+            pos = arrayPos + 1
+          else if (objectPos !== -1)
+            pos = objectPos + 1
         }
-        else if (objectPos !== -1) {
-          elem = part.slice(0, objectPos + 1)
-          part = splice(part, 0, objectPos + 1)
-        }
-        else {
-          let pos = part.search(arraySeparator) !== -1 ? part.search(arraySeparator) - 1 : part.length
-          elem = part.slice(0, pos)
-          part = splice(part, 0, pos)
-        }
-        elem = elem.trim()
+        elem = part.slice(0, pos).trim()
+        part = splice(part, 0, pos)
         array = [...array, renderPart(elem, checkType(elem))]
         part = part.replace(arraySeparator, '')
         if (part.trim() === "")
@@ -99,6 +91,8 @@ const renderPart = (part, type) => {
       return array
     case 'number':
       return parseFloat(part)
+    case 'function':
+      return eval(part.replace('[f]', ''))
     case 'boolean':
       return part === 'true'
     case 'string':
@@ -109,6 +103,8 @@ const renderPart = (part, type) => {
 const renderStr = data => {
   var str = ''
   switch (typeof data) {
+    case "function":
+      return `[f]${data}`
     case "string":
     case "number":
       return `${data}`
@@ -139,6 +135,7 @@ const SDN = {
   },
   stringify: data => {
     return renderStr(data)
-  }
+  },
+  [Symbol.toStringTag]: "SDN"
 }
 module.exports = SDN

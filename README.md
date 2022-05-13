@@ -30,6 +30,7 @@ Convert a Javascript data in Scritracius Data Notation to string
 
 - Boolean
 - String
+- Function
 - Integer
 - Float
 - Object

@@ -1,6 +1,6 @@
 {
   "name": "scritracius-data-notation",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Notation for Scritracius Data",
   "main": "index.js",
   "scripts": {
